@@ -118,14 +118,15 @@ var Engine = (function(global) {
             numRows = 6,
             numCols = 5,
             row, col;
-
+        
+        // Add white background to canvas to avoid player repaint
+        ctx.rect(0,0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+        ctx.fill();
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
          */
-        ctx.rect(0,0, canvas.width, canvas.height);
-        ctx.fillStyle = "white";
-        ctx.fill();
         for (row = 0; row < numRows; row++) {
             for (col = 0; col < numCols; col++) {
                 /* The drawImage function of the canvas' context element
