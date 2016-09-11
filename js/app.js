@@ -23,11 +23,21 @@ Enemy.prototype.update = function(dt) {
         this.x = -30;
         this.speed = Math.random()*300 + 50;
     }
+    
+    //enemy area
+    this.area = {
+        'x': this.x,
+        'y': this.y + 75,
+        'xWidth': 101,
+        'yHeight': 70
+    }
 };
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    ctx.fillStyle = "rgba(0,255,0,0.5)";
+    ctx.fillRect(this.x,this.area.y,this.area.xWidth,this.area.yHeight);
 };
 
 // Now write your own player class
@@ -43,11 +53,29 @@ var Player = function(){
 
 Player.prototype.update = function(){
     //update method
+    var thisPlayer = this;
+    var win = function(){
+        thisPlayer.y = 380;
+    }
+    if (this.y === -20){
+        setTimeout(win,1000);
+    }
+    
+    //define area
+    this.area = {
+        'x': this.x + 10,
+        'y': this.y + 85,
+        'xWidth': 80,
+        'yHeight': 60
+    }
 }
 
 Player.prototype.render = function(){
     //render method
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    // player area
+    ctx.fillStyle = "rgba(255,255,0,0.5)";
+    ctx.fillRect(this.area.x,this.area.y,this.area.xWidth,this.area.yHeight);
 }
 
 Player.prototype.handleInput = function(key) {
@@ -75,6 +103,7 @@ Player.prototype.handleInput = function(key) {
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 var allEnemies = [];
+//loop to add two enemies per row
 for (var i = 0; i < 3 ; i++){
     for (var j = 0; j < 2; j++){
         var enemy = new Enemy(i);
@@ -82,9 +111,17 @@ for (var i = 0; i < 3 ; i++){
     }
 }
 
-
-
 var player = new Player();
+
+
+var test = function(){
+//    console.log("Player coordinates: X - " + player.x + " Y: " + player.y);
+//    console.log("Player coordinates: X - " + allEnemies[i].x + " Y: " + allEnemies[i].y);
+    console.log(player.area.x);
+    
+}
+
+    window.addEventListener('click', test);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -98,3 +135,17 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+//Check for collisions function
+var checkCollisions = function(){
+    var playerArea = player.area;
+    for (var i = 0; i < allEnemies.length; i++){
+        var enemyArea = allEnemies[i].area;
+        if (enemyArea.x + enemyArea.xWidth > playerArea.x && 
+           enemyArea.x < playerArea.x + playerArea.xWidth &&
+           enemyArea.y + enemyArea.yHeight > playerArea.y &&
+           enemyArea.y < playerArea.y + playerArea.yHeight){
+            console.log("Collision detected!")
+        }
+    }
+}
