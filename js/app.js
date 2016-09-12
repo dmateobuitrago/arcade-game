@@ -26,9 +26,9 @@ Enemy.prototype.update = function(dt) {
     
     //enemy area
     this.area = {
-        'x': this.x,
+        'x': this.x + 10,
         'y': this.y + 75,
-        'xWidth': 101,
+        'xWidth': 80,
         'yHeight': 70
     }
 };
@@ -36,8 +36,6 @@ Enemy.prototype.update = function(dt) {
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    ctx.fillStyle = "rgba(0,255,0,0.5)";
-    ctx.fillRect(this.x,this.area.y,this.area.xWidth,this.area.yHeight);
 };
 
 // Now write your own player class
@@ -56,16 +54,19 @@ Player.prototype.update = function(){
     var thisPlayer = this;
     var win = function(){
         thisPlayer.y = 380;
+        thisPlayer.x = 200;
+        score += 100;
+        updateData(score,lives);
     }
     if (this.y === -20){
-        setTimeout(win,1000);
+        setTimeout(win);
     }
     
     //define area
     this.area = {
-        'x': this.x + 10,
+        'x': this.x + 23,
         'y': this.y + 85,
-        'xWidth': 80,
+        'xWidth': 55,
         'yHeight': 60
     }
 }
@@ -73,9 +74,6 @@ Player.prototype.update = function(){
 Player.prototype.render = function(){
     //render method
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    // player area
-    ctx.fillStyle = "rgba(255,255,0,0.5)";
-    ctx.fillRect(this.area.x,this.area.y,this.area.xWidth,this.area.yHeight);
 }
 
 Player.prototype.handleInput = function(key) {
@@ -138,6 +136,12 @@ document.addEventListener('keyup', function(e) {
 
 //Check for collisions function
 var checkCollisions = function(){
+    var playerCollision = function(){
+        player.y = 380;
+        player.x = 200;
+        lives -= 1;
+        updateData(score,lives);
+    }
     var playerArea = player.area;
     for (var i = 0; i < allEnemies.length; i++){
         var enemyArea = allEnemies[i].area;
@@ -146,6 +150,24 @@ var checkCollisions = function(){
            enemyArea.y + enemyArea.yHeight > playerArea.y &&
            enemyArea.y < playerArea.y + playerArea.yHeight){
             console.log("Collision detected!")
+            setTimeout(playerCollision);
         }
     }
 }
+
+var score = 0,
+    lives = 3,
+    scoresCounter = document.getElementById("scores"),
+    livesCounter = document.getElementById("lives");
+
+var updateData = function(score,lives){
+    if(lives === 0){
+        alert("Game Over. Your score was " + score + " points.");
+        document.location.reload();
+    } else {
+        livesCounter.innerHTML = 'Lives ' + lives;
+        scoresCounter.innerHTML = 'Score ' + score; 
+    }
+}
+
+
