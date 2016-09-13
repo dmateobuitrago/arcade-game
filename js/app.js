@@ -103,7 +103,7 @@ Player.prototype.handleInput = function(key) {
 var allEnemies = [];
 //loop to add two enemies per row
 for (var i = 0; i < 3 ; i++){
-    for (var j = 0; j < 2; j++){
+    for (var j = 0; j < 1; j++){
         var enemy = new Enemy(i);
         allEnemies.push(enemy);    
     }
@@ -113,9 +113,10 @@ var player = new Player();
 
 
 var test = function(){
-//    console.log("Player coordinates: X - " + player.x + " Y: " + player.y);
+//    console.log("Gem coordinates: X - " + gem.x + " Y: " + gem.y);
 //    console.log("Player coordinates: X - " + allEnemies[i].x + " Y: " + allEnemies[i].y);
-    console.log(player.area.x);
+//    console.log(player.area.x);
+    console.log(lives);
     
 }
 
@@ -149,25 +150,86 @@ var checkCollisions = function(){
            enemyArea.x < playerArea.x + playerArea.xWidth &&
            enemyArea.y + enemyArea.yHeight > playerArea.y &&
            enemyArea.y < playerArea.y + playerArea.yHeight){
-            console.log("Collision detected!")
             setTimeout(playerCollision);
         }
     }
 }
 
+// Set scores and lives counters
 var score = 0,
-    lives = 3,
+    lives = 6,
     scoresCounter = document.getElementById("scores"),
     livesCounter = document.getElementById("lives");
 
+// Update lives and score data, it is called when player gets to the other side or when it collides with an enemy
 var updateData = function(score,lives){
+    console.log(lives);
     if(lives === 0){
         alert("Game Over. Your score was " + score + " points.");
-        document.location.reload();
+        document.location.reload(); 
     } else {
         livesCounter.innerHTML = 'Lives ' + lives;
         scoresCounter.innerHTML = 'Score ' + score; 
     }
 }
 
+// create collectible constructor
+var Gem = function(){
+    this.sprite = 'images/GemBlue.png';
+    this.x = -200;
+    this.y = -200;
+    //define area
+    this.area = {
+        'x': this.x + 23,
+        'y': this.y + 85,
+        'xWidth': 55,
+        'yHeight': 60
+    }
+}
 
+var yPosGem = Math.floor(Math.random() * 3);
+var xPosGem = Math.floor(Math.random() * 5);
+
+Gem.prototype.update = function(x,y){
+    this.yPos = [60, 140, 220];
+    this.xPos = [0,100,200,300,400];
+    this.x = this.xPos[x];
+    this.y = this.yPos[y];
+    //define area
+    this.area = {
+        'x': this.x + 23,
+        'y': this.y + 85,
+        'xWidth': 55,
+        'yHeight': 60
+    }
+}
+
+Gem.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+//var yPosGem = Math.floor(Math.random() * 3);
+//var xPosGem = Math.floor(Math.random() * 5);
+var gem = new Gem();
+
+//Check for gem collect function
+var checkGemCollect = function(){
+    var gemCollect = function(){
+        gem.x = -100;
+        gem.y = -100;
+        gem.area.x = -100;
+        gem.area.y = -100;
+        gem.area.xWidth = -100;
+        gem.area.yHeight = -100;
+        lives += 1;
+        updateData(score,lives);
+    }
+    var playerArea = player.area;
+    var gemArea = gem.area;
+    if (gemArea.x + gemArea.xWidth > playerArea.x && 
+       gemArea.x < playerArea.x + playerArea.xWidth &&
+       gemArea.y + gemArea.yHeight > playerArea.y &&
+       gemArea.y < playerArea.y + playerArea.yHeight){
+        setTimeout(gemCollect);
+    }
+}
