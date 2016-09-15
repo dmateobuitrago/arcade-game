@@ -126,10 +126,8 @@ var Engine = (function(global) {
             numCols = 5,
             row, col;
         
-        // Add white background to canvas to avoid player repaint
-        ctx.rect(0,0, canvas.width, canvas.height);
-        ctx.fillStyle = "white";
-        ctx.fill();
+        // Clear canvas
+        ctx.clearRect(0,0, canvas.width, canvas.height);
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
          * portion of the "grid"
