@@ -59,7 +59,7 @@ Player.prototype.update = function(){
         updateData(score,lives);
     }
     if (this.y === -20){
-        setTimeout(win);
+        win();
     }
     
     //define area
@@ -150,7 +150,7 @@ var checkCollisions = function(){
            enemyArea.x < playerArea.x + playerArea.xWidth &&
            enemyArea.y + enemyArea.yHeight > playerArea.y &&
            enemyArea.y < playerArea.y + playerArea.yHeight){
-            setTimeout(playerCollision);
+            playerCollision();
         }
     }
 }
@@ -230,6 +230,6 @@ var checkGemCollect = function(){
        gemArea.x < playerArea.x + playerArea.xWidth &&
        gemArea.y + gemArea.yHeight > playerArea.y &&
        gemArea.y < playerArea.y + playerArea.yHeight){
-        setTimeout(gemCollect);
+        gemCollect();
     }
 }

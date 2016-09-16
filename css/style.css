@@ -2,12 +2,9 @@ body {
     text-align: center;
 }
 
-#container {
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .scoreboard {
-    width: 250px;
-    padding: 40px 0;
+    display: flex;
+    width: 505px;
+    margin: 0 auto;
+    justify-content: space-between;
 }
