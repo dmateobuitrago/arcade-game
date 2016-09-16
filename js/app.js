@@ -116,7 +116,7 @@ var test = function(){
 //    console.log("Gem coordinates: X - " + gem.x + " Y: " + gem.y);
 //    console.log("Player coordinates: X - " + allEnemies[i].x + " Y: " + allEnemies[i].y);
 //    console.log(player.area.x);
-    console.log(lives);
+    console.log(live);
     
 }
 
@@ -141,6 +141,10 @@ var checkCollisions = function(){
         player.y = 380;
         player.x = 200;
         lives -= 1;
+        livesList.innerHTML = "";
+        for(var i = 0; i<lives; i++){
+            livesList.innerHTML += listItem;
+        }
         updateData(score,lives);
     }
     var playerArea = player.area;
@@ -160,6 +164,10 @@ var score = 0,
     lives = 6,
     scoresCounter = document.getElementById("scores"),
     livesCounter = document.getElementById("lives");
+
+var livesList = document.getElementById("livesList");
+var live = livesList.firstChild;
+var listItem = "<li class='live'></li>"
 
 // Update lives and score data, it is called when player gets to the other side or when it collides with an enemy
 var updateData = function(score,lives){
@@ -223,6 +231,7 @@ var checkGemCollect = function(){
         gem.area.yHeight = -100;
         lives += 1;
         updateData(score,lives);
+        livesList.innerHTML += listItem;
     }
     var playerArea = player.area;
     var gemArea = gem.area;
