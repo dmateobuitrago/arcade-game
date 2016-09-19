@@ -204,6 +204,7 @@ var Gem = function(x,y,area){
     this.y = y;
     //define area
     this.area = area;
+    this.collected = false;
 }
 
 // create a collectible subclass
@@ -231,6 +232,7 @@ Gem.prototype.update = function(x,y){
         'xWidth': 55,
         'yHeight': 60
     }
+    this.collected = false;
 }
 
 PointsGem.prototype.update = function (x,y){
@@ -253,30 +255,33 @@ Gem.prototype.render = function(){
 
 Gem.prototype.collect = function(){
     lives += 1;
+    livesList.innerHTML += listItem;
 }
 
 PointsGem.prototype.collect = function(){
-    console.log("green collect");
-    lives += 3;
+    if (this.collected === false){
+        this.collected = true;
+        score += 300;
+    }
 }
 
 //var yPosGem = Math.floor(Math.random() * 3);
 //var xPosGem = Math.floor(Math.random() * 5);
 var gem = new Gem(-200,-200,gemArea);
 var pointGem = new PointsGem(-200,-200,gemArea);
-
+    
 //Check for gem collect function
 var checkGemCollect = function(gem){
     var gemCollect = function(){
+        gem.collect();
         gem.x = -100;
         gem.y = -100;
         gem.area.x = -100;
         gem.area.y = -100;
         gem.area.xWidth = -100;
         gem.area.yHeight = -100;
-        gem.collect();
+        console.log(gem);
         updateData(score,lives);
-        livesList.innerHTML += listItem;
     }
     var playerArea = player.area;
     var area = gem.area;
