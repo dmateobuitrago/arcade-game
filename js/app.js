@@ -47,19 +47,22 @@ var Player = function(){
     this.y = 380;
     this.movementY = 80;
     this.movementX = 100;
+    this.winning = false;
 }
 
 Player.prototype.update = function(){
-    //update method
     var thisPlayer = this;
     var win = function(){
-        thisPlayer.y = 380;
         thisPlayer.x = 200;
+        thisPlayer.y = 380;
         score += 100;
         updateData(score,lives);
+        thisPlayer.winning = false;
     }
-    if (this.y === -20){
-        win();
+    //update method
+    if (this.y === -20 && this.winning === false){
+        this.winning = true;
+        setTimeout(win,700);
     }
     
     //define area
@@ -70,6 +73,13 @@ Player.prototype.update = function(){
         'yHeight': 60
     }
 }
+
+//Player.prototype.win = function(){
+//    this.x = 200;
+//    this.y = 380;
+//    score += 1;
+//    updateData(score,lives);
+//}
 
 Player.prototype.render = function(){
     //render method
@@ -181,11 +191,39 @@ var updateData = function(score,lives){
     }
 }
 
+var gemArea = {
+        'x': this.x + 23,
+        'y': this.y + 85,
+        'xWidth': 55,
+        'yHeight': 60
+    }
 // create collectible constructor
-var Gem = function(){
+var Gem = function(x,y,area){
     this.sprite = 'images/GemBlue.png';
-    this.x = -200;
-    this.y = -200;
+    this.x = x;
+    this.y = y;
+    //define area
+    this.area = area;
+}
+
+// create a collectible subclass
+var PointsGem = function(x,y,area){
+    Gem.call(this, x, y, area);
+    this.sprite = 'images/GemGreen.png';
+}
+PointsGem.prototype = new Gem();
+
+var yPosGem = Math.floor(Math.random() * 3);
+var xPosGem = Math.floor(Math.random() * 5);
+
+var yPosPointGem = Math.floor(Math.random() * 3);
+var xPosPointGem = Math.floor(Math.random() * 5);
+
+Gem.prototype.update = function(x,y){
+    this.yPos = [60, 140, 220];
+    this.xPos = [0,100,200,300,400];
+    this.x = this.xPos[x];
+    this.y = this.yPos[y];
     //define area
     this.area = {
         'x': this.x + 23,
@@ -195,10 +233,7 @@ var Gem = function(){
     }
 }
 
-var yPosGem = Math.floor(Math.random() * 3);
-var xPosGem = Math.floor(Math.random() * 5);
-
-Gem.prototype.update = function(x,y){
+PointsGem.prototype.update = function (x,y){
     this.yPos = [60, 140, 220];
     this.xPos = [0,100,200,300,400];
     this.x = this.xPos[x];
@@ -216,12 +251,22 @@ Gem.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+Gem.prototype.collect = function(){
+    lives += 1;
+}
+
+PointsGem.prototype.collect = function(){
+    console.log("green collect");
+    lives += 3;
+}
+
 //var yPosGem = Math.floor(Math.random() * 3);
 //var xPosGem = Math.floor(Math.random() * 5);
-var gem = new Gem();
+var gem = new Gem(-200,-200,gemArea);
+var pointGem = new PointsGem(-200,-200,gemArea);
 
 //Check for gem collect function
-var checkGemCollect = function(){
+var checkGemCollect = function(gem){
     var gemCollect = function(){
         gem.x = -100;
         gem.y = -100;
@@ -229,16 +274,16 @@ var checkGemCollect = function(){
         gem.area.y = -100;
         gem.area.xWidth = -100;
         gem.area.yHeight = -100;
-        lives += 1;
+        gem.collect();
         updateData(score,lives);
         livesList.innerHTML += listItem;
     }
     var playerArea = player.area;
-    var gemArea = gem.area;
-    if (gemArea.x + gemArea.xWidth > playerArea.x && 
-       gemArea.x < playerArea.x + playerArea.xWidth &&
-       gemArea.y + gemArea.yHeight > playerArea.y &&
-       gemArea.y < playerArea.y + playerArea.yHeight){
+    var area = gem.area;
+    if (area.x + area.xWidth > playerArea.x && 
+       area.x < playerArea.x + playerArea.xWidth &&
+       area.y + area.yHeight > playerArea.y &&
+       area.y < playerArea.y + playerArea.yHeight){
         gemCollect();
     }
 }

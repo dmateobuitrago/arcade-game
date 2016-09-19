@@ -82,7 +82,8 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         checkCollisions();
-        checkGemCollect();
+        checkGemCollect(gem);
+        checkGemCollect(pointGem);
     }
 
     /* This is called by the update function and loops through all of the
@@ -100,6 +101,10 @@ var Engine = (function(global) {
         
         if(lives === 1){
             gem.update(xPosGem,yPosGem);
+        }
+        
+        if (lives === 3){
+            pointGem.update(xPosPointGem,yPosPointGem);
         }
         
     }
@@ -162,6 +167,7 @@ var Engine = (function(global) {
 
         player.render();
         gem.render();
+        pointGem.render();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -183,6 +189,7 @@ var Engine = (function(global) {
         'images/enemy-bug.png',
         'images/char-boy.png',
         'images/GemBlue.png',
+        'images/GemGreen.png'
     ]);
     Resources.onReady(init);
 
