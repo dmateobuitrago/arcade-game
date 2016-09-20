@@ -52,17 +52,13 @@ var Player = function(){
 
 Player.prototype.update = function(){
     var thisPlayer = this;
-    var win = function(){
-        thisPlayer.x = 200;
-        thisPlayer.y = 380;
-        score += 100;
-        updateData(score,lives);
-        thisPlayer.winning = false;
-    }
     //update method
     if (this.y === -20 && this.winning === false){
         this.winning = true;
-        setTimeout(win,700);
+//        setTimeout(function(){
+//            thisPlayer.win();
+//        },700);
+        setTimeout(this.win.bind(this),700);
     }
     
     //define area
@@ -74,12 +70,13 @@ Player.prototype.update = function(){
     }
 }
 
-//Player.prototype.win = function(){
-//    this.x = 200;
-//    this.y = 380;
-//    score += 1;
-//    updateData(score,lives);
-//}
+Player.prototype.win = function(){
+    this.x = 200;
+    this.y = 380;
+    score += 100;
+    updateData(score,lives);
+    this.winning = false;
+}
 
 Player.prototype.render = function(){
     //render method
