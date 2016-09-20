@@ -82,8 +82,8 @@ var Engine = (function(global) {
     function update(dt) {
         updateEntities(dt);
         checkCollisions();
-        checkGemCollect(gem);
-        checkGemCollect(pointGem);
+        checkGemCollect(blueGem);
+        checkGemCollect(greenGem);
     }
 
     /* This is called by the update function and loops through all of the
@@ -99,16 +99,18 @@ var Engine = (function(global) {
         });
         player.update();
         
-        if(lives === 1){
-            gem.update(xPosGem,yPosGem);
+        if(lives === 1 && blueGem.collected === false){
+            blueGem.update(xPosGem,yPosGem);
         }
         
-        if (lives === 3){
-            pointGem.update(xPosPointGem,yPosPointGem);
+        if(lives === 5 && greenGem.collected === false){           
+            setInterval(function(){
+                greenGem.update(xPosPointGem,yPosPointGem);
+            },1000);
+            greenGem.visible = false;
         }
-        
     }
-
+    
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every
      * game tick (or loop of the game engine) because that's how games work -
@@ -166,8 +168,8 @@ var Engine = (function(global) {
         });
 
         player.render();
-        gem.render();
-        pointGem.render();
+        blueGem.render();
+        greenGem.render();
     }
 
     /* This function does nothing but it could have been a good place to

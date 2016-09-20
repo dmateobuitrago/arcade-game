@@ -120,10 +120,8 @@ var player = new Player();
 
 
 var test = function(){
-//    console.log("Gem coordinates: X - " + gem.x + " Y: " + gem.y);
-//    console.log("Player coordinates: X - " + allEnemies[i].x + " Y: " + allEnemies[i].y);
-//    console.log(player.area.x);
-    console.log(live);
+    console.log("blueGem.collected = " + blueGem.collected);
+    console.log("greenGem.collected = " + greenGem.collected);
     
 }
 
@@ -178,7 +176,6 @@ var listItem = "<li class='live'></li>"
 
 // Update lives and score data, it is called when player gets to the other side or when it collides with an enemy
 var updateData = function(score,lives){
-    console.log(lives);
     if(lives === 0){
         alert("Game Over. Your score was " + score + " points.");
         document.location.reload(); 
@@ -196,20 +193,27 @@ var gemArea = {
     }
 // create collectible constructor
 var Gem = function(x,y,area){
-    this.sprite = 'images/GemBlue.png';
     this.x = x;
     this.y = y;
     //define area
     this.area = area;
     this.collected = false;
+    this.visible = true;
 }
 
 // create a collectible subclass
-var PointsGem = function(x,y,area){
+var GreenGem = function(x,y,area){
     Gem.call(this, x, y, area);
     this.sprite = 'images/GemGreen.png';
 }
-PointsGem.prototype = new Gem();
+GreenGem.prototype = new Gem();
+
+// create a collectible subclass
+var BlueGem = function(x,y,area){
+    Gem.call(this, x, y, area);
+    this.sprite = 'images/GemBlue.png';
+}
+BlueGem.prototype = new Gem();
 
 var yPosGem = Math.floor(Math.random() * 3);
 var xPosGem = Math.floor(Math.random() * 5);
@@ -232,7 +236,32 @@ Gem.prototype.update = function(x,y){
     this.collected = false;
 }
 
-PointsGem.prototype.update = function (x,y){
+Gem.prototype.hide = function(){
+    this.x = -100;
+    this.y = -100;
+    this.area.x = -100;
+    this.area.y = -100;
+    this.area.xWidth = -100;
+    this.area.yHeight = -100;
+    this.visible = false;
+    console.log("hide");
+}
+
+Gem.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+BlueGem.prototype.collect = function(){
+    console.log("blueGem collect");
+    lives += 1;
+    livesList.innerHTML += listItem;
+}
+
+GreenGem.prototype.collect = function(){
+    score += 300;
+}
+
+GreenGem.prototype.update = function(x,y){
     this.yPos = [60, 140, 220];
     this.xPos = [0,100,200,300,400];
     this.x = this.xPos[x];
@@ -244,48 +273,32 @@ PointsGem.prototype.update = function (x,y){
         'xWidth': 55,
         'yHeight': 60
     }
-}
-
-Gem.prototype.render = function(){
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
-
-Gem.prototype.collect = function(){
-    lives += 1;
-    livesList.innerHTML += listItem;
-}
-
-PointsGem.prototype.collect = function(){
-    if (this.collected === false){
-        this.collected = true;
-        score += 300;
+    this.collected = false;
+    var _this = this;
+    if(this.visible === true){
+        setInterval(function(){
+            console.log("setInterval hide");
+            _this.hide();
+        },600);  
     }
 }
 
 //var yPosGem = Math.floor(Math.random() * 3);
 //var xPosGem = Math.floor(Math.random() * 5);
-var gem = new Gem(-200,-200,gemArea);
-var pointGem = new PointsGem(-200,-200,gemArea);
+var blueGem = new BlueGem(-200,-200,gemArea);
+var greenGem = new GreenGem(-200,-200,gemArea);
     
 //Check for gem collect function
 var checkGemCollect = function(gem){
-    var gemCollect = function(){
-        gem.collect();
-        gem.x = -100;
-        gem.y = -100;
-        gem.area.x = -100;
-        gem.area.y = -100;
-        gem.area.xWidth = -100;
-        gem.area.yHeight = -100;
-        console.log(gem);
-        updateData(score,lives);
-    }
     var playerArea = player.area;
     var area = gem.area;
     if (area.x + area.xWidth > playerArea.x && 
        area.x < playerArea.x + playerArea.xWidth &&
        area.y + area.yHeight > playerArea.y &&
-       area.y < playerArea.y + playerArea.yHeight){
-        gemCollect();
+       area.y < playerArea.y + playerArea.yHeight && gem.collected === false){
+        gem.collect();
+        gem.hide();
+        gem.collected = true;
+        updateData(score,lives);
     }
 }
