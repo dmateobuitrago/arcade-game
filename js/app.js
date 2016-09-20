@@ -274,13 +274,6 @@ GreenGem.prototype.update = function(x,y){
         'yHeight': 60
     }
     this.collected = false;
-    var _this = this;
-    if(this.visible === true){
-        setInterval(function(){
-            console.log("setInterval hide");
-            _this.hide();
-        },600);  
-    }
 }
 
 //var yPosGem = Math.floor(Math.random() * 3);

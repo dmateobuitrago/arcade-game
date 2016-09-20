@@ -104,10 +104,7 @@ var Engine = (function(global) {
         }
         
         if(lives === 5 && greenGem.collected === false){           
-            setInterval(function(){
-                greenGem.update(xPosPointGem,yPosPointGem);
-            },1000);
-            greenGem.visible = false;
+            greenGem.update(xPosPointGem,yPosPointGem);
         }
     }
     
