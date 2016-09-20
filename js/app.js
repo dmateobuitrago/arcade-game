@@ -244,7 +244,6 @@ Gem.prototype.hide = function(){
     this.area.xWidth = -100;
     this.area.yHeight = -100;
     this.visible = false;
-    console.log("hide");
 }
 
 Gem.prototype.render = function(){

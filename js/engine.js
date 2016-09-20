@@ -99,12 +99,18 @@ var Engine = (function(global) {
         });
         player.update();
         
-        if(lives === 1 && blueGem.collected === false){
+        if(lives === 1 && blueGem.collected === false && blueGem.visible === true){
             blueGem.update(xPosGem,yPosGem);
+            setTimeout(function(){
+                blueGem.hide();
+            },3000);
         }
         
-        if(lives === 5 && greenGem.collected === false){           
+        if(lives === 5 && greenGem.collected === false && greenGem.visible === true){           
             greenGem.update(xPosPointGem,yPosPointGem);
+            setTimeout(function(){
+                greenGem.hide();
+            },2000);
         }
     }
     
